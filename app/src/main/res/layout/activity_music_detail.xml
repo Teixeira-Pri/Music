@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    tools:context=".MusicDetailActivity">
+
+    <TextView
+        android:id="@+id/tv_band_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Banda: " />
+
+    <EditText
+        android:id="@+id/edt_band_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Adicione o artista e/ou banda"/>
+
+    <TextView
+        android:id="@+id/tv_music_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Música: "
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/edt_music_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Adicione a música"/>
+
+    <Button
+        android:id="@+id/btn_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Concluir"
+        android:layout_marginTop="16dp"/>
+
+
+
+</LinearLayout>

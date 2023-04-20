@@ -1,4 +1,4 @@
-package com.example.music
+package com.example.music.data
 
 import androidx.room.Dao
 import androidx.room.Insert

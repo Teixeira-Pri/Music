@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_margin="16dp"
     android:orientation="vertical"
-    tools:context=".MusicDetailActivity">
+    tools:context=".presentation.MusicDetailActivity">
 
     <TextView
         android:id="@+id/tv_band_detail"

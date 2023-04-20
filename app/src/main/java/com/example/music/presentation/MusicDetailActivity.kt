@@ -1,4 +1,4 @@
-package com.example.music
+package com.example.music.presentation
 
 import android.app.Activity
 import android.content.Context
@@ -11,12 +11,14 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import com.example.music.R
+import com.example.music.data.Gender
 import com.google.android.material.snackbar.Snackbar
 
 
 class MusicDetailActivity : AppCompatActivity() {
 
-    private var gender:Gender? = null
+    private var gender: Gender? = null
     private lateinit var btnDone: Button
 
     companion object{
@@ -55,9 +57,9 @@ class MusicDetailActivity : AppCompatActivity() {
 
             if(artista.isNotEmpty() && music.isNotEmpty()){
                 if(gender == null){
-                    addOrupdateMusic(0,artista, music,ActionType.CREATE)
+                    addOrupdateMusic(0,artista, music, ActionType.CREATE)
                 } else {
-                    addOrupdateMusic(gender!!.id,artista,music,ActionType.UPDATE)
+                    addOrupdateMusic(gender!!.id,artista,music, ActionType.UPDATE)
                 }
             }else{
                 showMessage(it,"Fields are required")
@@ -73,7 +75,7 @@ class MusicDetailActivity : AppCompatActivity() {
         actionType: ActionType
     ){
         val music = Gender(id,artista,music)
-                returnAction(music,actionType)
+        returnAction(music, actionType)
     }
 
     private fun returnAction(gender: Gender, actionType: ActionType){
@@ -91,7 +93,7 @@ class MusicDetailActivity : AppCompatActivity() {
             R.id.delete_music -> {
 
                 if(gender != null){
-                    returnAction(gender!!,ActionType.DELETE)
+                    returnAction(gender!!, ActionType.DELETE)
                 }else{
                     showMessage(btnDone,"Music not found")
                 }

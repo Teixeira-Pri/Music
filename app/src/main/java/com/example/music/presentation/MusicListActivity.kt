@@ -1,4 +1,4 @@
-package com.example.music
+package com.example.music.presentation
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +12,10 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.example.music.MusicApplication
+import com.example.music.R
+import com.example.music.data.AppDataBase
+import com.example.music.data.Gender
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
@@ -22,17 +26,18 @@ import java.io.Serializable
 class MainActivity : AppCompatActivity() {
 
     private lateinit var ctnContent: LinearLayout
+
     //adapter
     private val adapter by lazy {
         ListGenderAdapter(::onListItemClicked)
     }
 
-    private val dataBase by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            AppDataBase::class.java, "gender-database"
-        ).build()
+    private val viewModel: MusicListViewModel by lazy {
+        MusicListViewModel.create(application)
     }
+
+    lateinit var dataBase: AppDataBase
+
 
     private val dao by lazy {
         dataBase.genderDao()
@@ -45,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             //pegando o resultado
             val data = result.data
             val musicAction = data?.getSerializableExtra(MUSIC_ACTION_EXTRA) as MusicAction
-            val gender:Gender = musicAction.music
+            val gender: Gender = musicAction.music
 
             when (musicAction.actionType) {
                 ActionType.DELETE.name -> deleteById(gender.id)
@@ -59,7 +64,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        listFromDataBase()
 
         ctnContent = findViewById(R.id.ctn_content)
 
@@ -71,6 +75,14 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener {
             openMusicDetail()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        dataBase = (application as MusicApplication).getAppDataBase()
+
+        listFromDataBase()
     }
 
     private fun insertIntoDataBase(gender: Gender) {

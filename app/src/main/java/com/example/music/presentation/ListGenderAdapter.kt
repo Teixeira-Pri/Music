@@ -1,4 +1,4 @@
-package com.example.music
+package com.example.music.presentation
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.music.R
+import com.example.music.data.Gender
 
 
 class ListGenderAdapter(

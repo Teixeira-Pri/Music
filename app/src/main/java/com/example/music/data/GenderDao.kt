@@ -1,5 +1,6 @@
 package com.example.music.data
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,7 +15,7 @@ interface GenderDao {
     fun insert(gender: Gender)
 
     @Query("Select * from gender")
-    fun getAll(): List<Gender>
+    fun getAll(): LiveData <List<Gender>>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(gender: Gender)

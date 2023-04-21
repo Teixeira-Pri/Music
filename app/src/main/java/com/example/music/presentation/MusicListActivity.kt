@@ -10,8 +10,8 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.example.music.MusicApplication
 import com.example.music.R
 import com.example.music.data.AppDataBase
@@ -36,13 +36,6 @@ class MainActivity : AppCompatActivity() {
         MusicListViewModel.create(application)
     }
 
-    lateinit var dataBase: AppDataBase
-
-
-    private val dao by lazy {
-        dataBase.genderDao()
-    }
-
     private val startForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
@@ -50,19 +43,14 @@ class MainActivity : AppCompatActivity() {
             //pegando o resultado
             val data = result.data
             val musicAction = data?.getSerializableExtra(MUSIC_ACTION_EXTRA) as MusicAction
-            val gender: Gender = musicAction.music
+            viewModel.execute(musicAction)
 
-            when (musicAction.actionType) {
-                ActionType.DELETE.name -> deleteById(gender.id)
-                ActionType.CREATE.name -> insertIntoDataBase(gender)
-                ActionType.UPDATE.name -> updateIntoDataBase(gender)
-            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.music_list_activity)
 
 
         ctnContent = findViewById(R.id.ctn_content)
@@ -80,43 +68,25 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        dataBase = (application as MusicApplication).getAppDataBase()
-
         listFromDataBase()
     }
 
-    private fun insertIntoDataBase(gender: Gender) {
-        CoroutineScope(IO).launch {
-            dao.insert(gender)
-            listFromDataBase()
-        }
-    }
-
-    private fun deleteById(id: Int) {
-        CoroutineScope(IO).launch {
-            dao.deleteById(id)
-            listFromDataBase()
-        }
-    }
-
-    private fun updateIntoDataBase(gender: Gender) {
-        CoroutineScope(IO).launch {
-            dao.update(gender)
-            listFromDataBase()
-        }
-    }
     private fun deleteAll() {
-        CoroutineScope(IO).launch {
-            dao.deleteAll()
-            listFromDataBase()
-        }
+        val musicAction = MusicAction(null,ActionType.DELETE_ALL.name)
+        viewModel.execute(musicAction)
     }
 
     private fun listFromDataBase(){
-        CoroutineScope(IO).launch {
-            val myDataBaseList: List<Gender> = dao.getAll()
-            adapter.submitList(myDataBaseList)
-        }
+
+            val listObserver = Observer<List<Gender>>{ listGender ->
+                if(listGender.isEmpty()){
+                    ctnContent.visibility = View.VISIBLE
+                } else {
+                    ctnContent.visibility = View.GONE
+                }
+                adapter.submitList(listGender)
+            }
+          viewModel.musicLiveData.observe(this@MainActivity,listObserver)
     }
 
     private fun showMessage(view: View, message: String){
@@ -154,12 +124,13 @@ class MainActivity : AppCompatActivity() {
 enum class ActionType {
 
     DELETE,
+    DELETE_ALL,
     UPDATE,
     CREATE
 }
 
 data class MusicAction(
-    val music: Gender,
+    val music: Gender?,
     val actionType: String
 ) : Serializable
 
